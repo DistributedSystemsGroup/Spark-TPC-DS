@@ -21,10 +21,10 @@ object BenchSQLDS {
 	  new TPCDS (
 	    sqlContext = sqlContext,
 	    sparkVersion = "1.3.1",
-	    dataLocation = "/user/ubuntu/tpcds-data",
+	    dataLocation = args(1),
 	    dsdgenDir = "/usr/local/bin/",
 	    tables = tables.tables,
-	    scaleFactor = "10")
+	    scaleFactor = args(2))
 
 	tpcds.setup()
 
@@ -41,7 +41,7 @@ object BenchSQLDS {
 
 	val exp = tpcds.runExperiment(
 	  queries = queries.interactiveQueries,
-	  resultsLocation = "/user/ubuntu/tpcds-results",
+	  resultsLocation = args(3),
 	  includeBreakdown = true
 //	  iterations = 1,
 //	  variations = null,
