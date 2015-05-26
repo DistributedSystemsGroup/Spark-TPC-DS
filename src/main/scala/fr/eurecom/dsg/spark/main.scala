@@ -1,5 +1,9 @@
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 import org.apache.spark.sql.parquet.Tables
 import com.databricks.spark.sql.perf.tpcds.TPCDS
+import com.databricks.spark.sql.perf.tpcds.queries.{SimpleQueries, ImpalaKitQueries}
 
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.{SparkConf, SparkContext}
@@ -24,14 +28,29 @@ object BenchSQLDS {
 
 	tpcds.setup()
 
-	tpcds.runExperiment(
-	  queries = Seq(),
+	val queries = ImpalaKitQueries
+	// ImpalaKitQueries contains:
+	// - interactiveQueries
+	// - reportingQueries
+	// - deepAnalyticQueries
+	// - impalaKitQueries (all of the above)
+	
+	// val queries = SimpleQueries
+	// SimpleQueries contains:
+	// - q7Derived (five variations of the q7 query)
+
+	val exp = tpcds.runExperiment(
+	  queries = queries.interactiveQueries,
 	  resultsLocation = "/user/ubuntu/tpcds-results",
 	  includeBreakdown = true
 //	  iterations = 1,
 //	  variations = null,
-//	  tags = <tags of this experiment>)
-	)
-
+//	  tags = <tags of this experiment>
+        )
+	do {
+		println(exp)
+		Thread.sleep(2000)
+	} while(exp.status == "Running")
+	println(exp)
     }
   }
