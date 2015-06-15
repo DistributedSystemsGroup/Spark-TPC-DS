@@ -3,7 +3,7 @@ Spark job for the TPC-DS benchmark.
 
 This code uses this library from Databricks: https://github.com/databricks/spark-sql-perf
 
-To compile put the jar compiled from the above library in lib/ and then run `build/sbt package`
+To compile put the jar compiled from the above library in lib/ and then run `build/sbt assembly`
 
 To execute the following arguments must be provided:
 
@@ -18,4 +18,5 @@ To execute the following arguments must be provided:
  - reporting
  - deepAnalytics
  - simple
+6. dsdgenDir
 
