@@ -10,23 +10,28 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object BenchSQLDS {
     def main(args: Array[String]) {
-	val conf = new SparkConf().setAppName("Bench")
-	val sparkContext = new SparkContext(conf)
-	val sqlContext = new SQLContext(sparkContext)
+	if(args.length < 6){
+          System.err.println("Usage: <inputPath> <scaleFactor> <outputPath> <iterations> <query> <dsdgenDir>")
+          System.exit(-1)
+        }
 
-	// Tables in TPC-DS benchmark used by experiments.
-	val tables = Tables(sqlContext)
-	// Setup TPC-DS experiment
-	val tpcds =
-	  new TPCDS (
-	    sqlContext = sqlContext,
-	    sparkVersion = "1.3.1",
-	    dataLocation = args(0),
-	    dsdgenDir = "/usr/local/bin/",
-	    tables = tables.tables,
-	    scaleFactor = args(1))
+        val conf = new SparkConf().setAppName("TPC-DS Bench")
+        val sparkContext = new SparkContext(conf)
+        val sqlContext = new SQLContext(sparkContext)
 
-	tpcds.setup()
+        // Tables in TPC-DS benchmark used by experiments.
+        val tables = Tables(sqlContext)
+        // Setup TPC-DS experiment
+        val tpcds =
+          new TPCDS (
+            sqlContext = sqlContext,
+            sparkVersion = "1.3.1",
+            dataLocation = args(0),
+            dsdgenDir = args(5),
+            tables = tables.tables,
+            scaleFactor = args(1))
+
+        tpcds.setup()
 
 	var queries = SimpleQueries.q7Derived
 	if (args(4) == "impalakit") {
